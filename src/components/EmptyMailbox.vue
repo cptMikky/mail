@@ -1,6 +1,7 @@
 <template>
 	<div id="emptycontent">
-		<p> <slot /></p>
+		<div class="icon-mail"></div>
+		<h2>{{ t('mail', 'No messages in this folder') }}</h2>
 	</div>
 </template>
 
@@ -9,8 +10,3 @@ export default {
 	name: 'EmptyMailbox',
 }
 </script>
-<style scoped lang="scss">
-	#emptycontent {
-		margin-top: 10px;
-	}
-</style>

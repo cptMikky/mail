@@ -27,7 +27,8 @@
 		:hint="t('mail', 'Loading messages')"
 		:slow-hint="t('mail', 'Indexing your messages. This can take a bit longer for larger mailboxes.')"
 	/>
-	<EmptyMailbox v-else-if="envelopes.length === 0" key="empty">{{ t('mail', 'No messages') }}</EmptyMailbox>
+	<EmptyMailboxSection v-else-if="!hasMessages && folder.isPriorityInbox" key="empty"></EmptyMailboxSection>
+	<EmptyMailbox v-else-if="!hasMessages" key="empty" />
 	<EnvelopeList
 		v-else
 		:account="account"
@@ -51,10 +52,13 @@ import MailboxLockedError from '../errors/MailboxLockedError'
 import MailboxNotCachedError from '../errors/MailboxNotCachedError'
 import {matchError} from '../errors/match'
 import {wait} from '../util/wait'
+import EmptyMailboxSection from './EmptyMailboxSection'
+import {normalizedEnvelopeListId} from '../store/normalization'
 
 export default {
 	name: 'Mailbox',
 	components: {
+		EmptyMailboxSection,
 		EmptyMailbox,
 		EnvelopeList,
 		Error,
@@ -101,6 +105,17 @@ export default {
 	computed: {
 		envelopes() {
 			return this.$store.getters.getEnvelopes(this.account.id, this.folder.id, this.searchQuery)
+		},
+		hasMessages() {
+			// it actually should be `return this.$store.getters.getEnvelopes(this.account.id, this.folder.id).length > 0`
+			// but for some reason Vue doesn't track the dependencies on reactive data then and messages in subfolders can't
+			// be opened then
+			const list = this.folder.envelopeLists[normalizedEnvelopeListId(this.searchQuery)]
+
+			if (list === undefined) {
+				return false
+			}
+			return list.length > 0
 		},
 	},
 	watch: {
