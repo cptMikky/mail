@@ -27,7 +27,7 @@
 		:hint="t('mail', 'Loading messages')"
 		:slow-hint="t('mail', 'Indexing your messages. This can take a bit longer for larger mailboxes.')"
 	/>
-	<EmptyMailbox v-else-if="envelopes.length === 0" key="empty" />
+	<EmptyMailbox v-else-if="envelopes.length === 0" key="empty">{{ t('mail', 'No messages') }}</EmptyMailbox>
 	<EnvelopeList
 		v-else
 		:account="account"
