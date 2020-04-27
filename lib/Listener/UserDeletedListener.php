@@ -67,5 +67,4 @@ class UserDeletedListener implements IEventListener {
 			}
 		}
 	}
-
 }
